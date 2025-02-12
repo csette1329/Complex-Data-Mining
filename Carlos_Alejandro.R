@@ -16,27 +16,26 @@ V <- c("Sabonete", "Detergente", "Refrigerante", "Carne", "Vinho", "Chocolate", 
 
 ## Perguntas:
 ## Quais os produtos que sao vendidos em Campinas, mas nao sao vendidos em Limeira?
-x = is.element(C,L)
-Q1 <- C[x==FALSE]
+Q1 <- C[is.element(C,L) == FALSE];Q1
 
 ## Quais os produtos que sao vendidos em Vinhedo, mas nao sao vendidos em Campinas?
-Q2 <- V[is.element(V,C) == FALSE]
+Q2 <- V[is.element(V,C) == FALSE];Q2
 
 ## Quais os produtos que sao vendidos em pelo menos uma cidade?
 a <- c(C,V,L)
 b <- unique(a[duplicated(a)])
-setdiff(a,b)
-Q3 <- setdiff(a,b)
+Q3 <- setdiff(a,b); Q3
 
 ## Quais os produtos que sao vendidos em todas as cidades?
-c <- a[duplicated(a)]
-c[duplicated(c)]
-Q4 <- c
+  
+  Q4 <- intersect(C, intersect(L,V));Q4
 
 ## Se a filial de Limeira parar a distribuicao de produtos, a filial de Campinas 
 ## terá todos os itens necessarios para atender à demanda de Limeira? 
 
-Q5 <- unique(is.element(intersect(L,C),C))
+  
+  Q5 <- all(is.element(L, C)) ; Q5
+
 
 ########################################
 # 2) Criptografia XOR
@@ -49,10 +48,10 @@ key <- c(1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1)
 bin
 key
   # Criar lista com a soma do número binário e da chave
-  sum = bin + key
+  sum <- bin + key
   # Quando a soma for 1, significa que XOR == True
   aux <- (sum == 1)
-  enc <- as.numeric(aux)
+  enc <- as.numeric(aux); enc
 
 ## Você deve converter o vetor bin para um número decimal e salvar o resultado na variável dec.
 
@@ -64,11 +63,11 @@ key
 
   # Calcular cada parcela da soma
   vetor_multiplicado = bin*(vetor_de_dois ^ vetor_de_potencias)
-  dec <- sum(vetor_multiplicado)
+  dec <- sum(vetor_multiplicado); dec
 
 ## Você deve converter o vetor enc para um número decimal e salvar o resultado na variável enc_dec.
   vetor_multiplicado = enc*(vetor_de_dois ^ vetor_de_potencias)
-  enc_dec <- sum(vetor_multiplicado)
+  enc_dec <- sum(vetor_multiplicado); enc_dec
 
 ########################################
 # 3) Média Final
@@ -95,41 +94,33 @@ rowMins <- function(m) {
 
 ## Perguntas:
 ## Você deve criar, na variável alunos, um data frame utilizando os vetores fornecidos. Além disso, sempre que utilizar algum dado já existente no arquivo, você deve referir-se a esse data frame (ou seja, você só pode utilizar os vetores fornecidos para criar esse data frame).
-alunos <- data.frame(RA = ids, Prova_1 = p1, Prova_2 = p2, Prova_3 = p3, Prova_4 = p4)
+alunos <-data.frame(RA = ids,p1 = p1,p2 = p2,p3 = p3,p4 = p4)
 
 
 ## Você deve salvar no vetor medquad a média final de cada aluno (média quadrática das provas, desconsiderando a menor nota obtida), com duas casas decimais.
   # Primeiramente, criar um vetor com a nota mínima de cada aluno.
-  nota_minima = rowMins(alunos)
-  
-  # Substiuir notas mínimas por zeros no dataframe
-  alunos$Prova_1[alunos$Prova_1 == nota_minima] <- 0
-  alunos$Prova_2[alunos$Prova_2 == nota_minima] <- 0
-  alunos$Prova_3[alunos$Prova_3 == nota_minima] <- 0
-  alunos$Prova_4[alunos$Prova_4 == nota_minima] <- 0
+  menorNota <-rowMins(alunos[,c(2:5)])
   
   # Calcular as médias quadráticas
-  medquad <- sqrt((alunos$Prova_1^2 + alunos$Prova_2^2  + alunos$Prova_3^2  + alunos$Prova_4^2)/3)
+  medquad <- round(sqrt((alunos$p1^2 + alunos$p2^2 + alunos$p3^2 + alunos$p4^2-menorNota^2)/3),2); medquad
 
 ## Você deve salvar no vetor reprovados um valor booleano correspondente a cada aluno, de forma que alunos com média final inferior a 7 sejam considerados reprovados (valor TRUE) e os demais sejam considerados aprovados (valor FALSE).
-  reprovados <- medquad < 7
+  reprovados <- medquad < 7;reprovados
 
 ## Considerando apenas os alunos aprovados. Você deve salvar nas variáveis mp1, mp2, mp3 e mp4 a média aritmética das notas das provas 1, 2, 3 e 4, respectivamente.
-  # Retornar as notas mínimas para o dataframe
-  alunos <- data.frame(RA = ids, Prova_1 = p1, Prova_2 = p2, Prova_3 = p3, Prova_4 = p4)
   # Criar df com a coluna de status de reprovado. Será usada posteriormente.
   alunos_com_status <- cbind(alunos,reprovados)
   
-mp1 <-mean(alunos_com_status$Prova_1[reprovados==FALSE])
-mp2 <-mean(alunos_com_status$Prova_2[reprovados==FALSE])
-mp3 <-mean(alunos_com_status$Prova_3[reprovados==FALSE])
-mp4 <-mean(alunos_com_status$Prova_4[reprovados==FALSE])
+mp1 <-mean(alunos_com_status$p1[reprovados==FALSE]); mp1
+mp2 <-mean(alunos_com_status$p2[reprovados==FALSE]); mp2
+mp3 <-mean(alunos_com_status$p3[reprovados==FALSE]); mp3
+mp4 <-mean(alunos_com_status$p4[reprovados==FALSE]); mp4
 
 ## Considerando apenas os alunos aprovados. Você deve salvar nas variáveis dp1, dp2, dp3 e dp4 o desvio padrão das notas das provas 1, 2, 3 e 4, respectivamente.
-dp1 <- sd(alunos_com_status$Prova_1[reprovados==FALSE])
-dp2 <- sd(alunos_com_status$Prova_2[reprovados==FALSE])
-dp3 <- sd(alunos_com_status$Prova_3[reprovados==FALSE])
-dp4 <- sd(alunos_com_status$Prova_4[reprovados==FALSE])
+dp1 <- sd(alunos_com_status$p1[reprovados==FALSE]); dp1
+dp2 <- sd(alunos_com_status$p2[reprovados==FALSE]); dp2
+dp3 <- sd(alunos_com_status$p3[reprovados==FALSE]); dp3
+dp4 <- sd(alunos_com_status$p4[reprovados==FALSE]); dp4
 
 ########################################
 # 4) Chuvas
@@ -147,32 +138,33 @@ chuva <- c(0.15, 0.11, 0.02, 0.01, 0.13, 0.12, 2.19, 1.11, 0.76, 2.98, 0.45, 2.6
 leituras <- data.frame(dia = dia, cidade = cidade, chuva = chuva)
 
 ## Remova do data frame leituras todas as linhas que possuem o mesmo dia e cidade, mantendo apenas a última ocorrência. Por exemplo, considere o data frame abaixo:
-# Criar um vetor com os dados que devem ser removidos.
-dup_vector <- !duplicated(leituras[,c('dia', 'cidade')],fromLast = TRUE)
-# Juntar esse vetor no df original.
-leituras <- cbind(leituras, dup_vector)
+  # Criar um vetor com os dados que devem ser removidos.
+  dup_vector <- !duplicated(leituras[,c('dia', 'cidade')],fromLast = TRUE)
+  # Juntar esse vetor no df original.
+  leituras <- cbind(leituras, dup_vector)
 
-# Criar as colunas com os dados filtrados.
-dias_filtrados <- leituras$dia[dup_vector]
-cidades_filtradas <- leituras$cidade[dup_vector]
-chuva_filtradas <- leituras$chuva[dup_vector]
+  # Criar as colunas com os dados filtrados.
+  dias_filtrados <- leituras$dia[dup_vector]
+  cidades_filtradas <- leituras$cidade[dup_vector]
+  chuva_filtradas <- leituras$chuva[dup_vector]
 
-# Criando o dataframe novamente.
-leituras <- data.frame(dias = dias_filtrados, cidade = cidades_filtradas, chuva = chuva_filtradas)
+  # Criando o dataframe novamente.
+  leituras <- data.frame(dias = dias_filtrados, cidade = cidades_filtradas, chuva = chuva_filtradas); leituras
 
 
 ## Salve nas variáveis acumCamp, acumLim e acumVin o total de chuvas observados nos 15 dias nas cidades de Campinas, Limeira e Vinhedo, respectivamente.
-acumCamp <- sum(leituras$chuva[leituras$cidade=="Campinas"])
-acumLim <- sum(leituras$chuva[leituras$cidade=="Limeira"])
-acumVin <- sum(leituras$chuva[leituras$cidade=="Vinhedo"])
+  acumCamp <- sum(leituras$chuva[leituras$cidade=="Campinas"]); acumCamp
+  acumLim <- sum(leituras$chuva[leituras$cidade=="Limeira"]); acumLim
+  acumVin <- sum(leituras$chuva[leituras$cidade=="Vinhedo"]); acumVin
 
 ## Você deve salvar nas variáveis dmaxCamp, dmaxLim e dmaxVin, dentre os dados existentes em seu data frame, o dia do mês com maior leitura de chuva nas cidades de Campinas, Limeira e Vinhedo, respectivamente. Se existir mais de um dia com o valor máximo, você deve escolher o primeiro dia. Caso uma cidade não tenha leitura em algum dia, aquele dia deve ser ignorado.
-dmaxCamp <- leituras$dias[leituras$chuva == max(leituras$chuva[leituras$cidade=="Campinas"])][1]
-dmaxLim <- leituras$dias[leituras$chuva == max(leituras$chuva[leituras$cidade=="Limeira"])][1]
-dmaxVin <- leituras$dias[leituras$chuva == max(leituras$chuva[leituras$cidade=="Vinhedo"])][1]
+  dmaxCamp <- leituras$dias[leituras$chuva == max(leituras$chuva[leituras$cidade=="Campinas"])][1]; dmaxCamp
+  dmaxLim <- leituras$dias[leituras$chuva == max(leituras$chuva[leituras$cidade=="Limeira"])][1]; dmaxLim
+  dmaxVin <- leituras$dias[leituras$chuva == max(leituras$chuva[leituras$cidade=="Vinhedo"])][1]; dmaxVin
 
 
 ## Você deve salvar nas variáveis dminCamp, dminLim e dminVin, dentre os dados existentes em seu data frame, o dia do mês com menor leitura de chuva nas cidades de Campinas, Limeira e Vinhedo, respectivamente. Se existir mais de um dia com o valor mínimo, você deve escolher o primeiro dia. Caso uma cidade não tenha leitura em algum dia, aquele dia deve ser ignorado.
-dminCamp <- leituras$dias[leituras$chuva == min(leituras$chuva[leituras$cidade=="Campinas"])][1]
-dminLim <- leituras$dias[leituras$chuva == min(leituras$chuva[leituras$cidade=="Limeira"])][1]
-dminVin <- leituras$dias[leituras$chuva == min(leituras$chuva[leituras$cidade=="Vinhedo"])][1]
+  dminCamp <- leituras$dias[leituras$chuva == min(leituras$chuva[leituras$cidade=="Campinas"])][1] ; dminCamp
+  dminLim <- leituras$dias[leituras$chuva == min(leituras$chuva[leituras$cidade=="Limeira"])][1]; dminLim
+  dminVin <- leituras$dias[leituras$chuva == min(leituras$chuva[leituras$cidade=="Vinhedo"])][1]; dminVin
+  
