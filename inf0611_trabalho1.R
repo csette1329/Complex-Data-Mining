@@ -68,7 +68,8 @@ term_freq <- document_term_frequencies(docs, term = "word")
     
 
 # Computando as estatísticas da coleção e convertendo em data.frame
-docs_stats <- as.data.frame(document_term_frequencies_statistics(...))
+docs_stats <- as.data.frame(document_term_frequencies_statistics(term_freq, k=1.2, b=0.75))
+head(docs_stats)
 # Visualizando as estatísticas da coleção (apenas para debuging)
 # head(docs_stats)
 
