@@ -25,7 +25,7 @@ source("./ranking_metrics.R", encoding = "UTF-8")
 source("./trabalho1_base.R", encoding = "UTF-8")
 
 # Configure aqui o diretório onde se encontram os arquivos do trabalho
-# setwd("")
+setwd("C:/Users/czset/OneDrive/Documentos/Mineração de Dados Complexos-CarlosSette/INF-611 Recuperação de Informação/trabalho1")
 
 
 ######################################################################
