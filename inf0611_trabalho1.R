@@ -63,7 +63,9 @@ ground_truths <- read.csv("relevance.csv", header = TRUE)
 
 
 # Computando a matriz de termo-documento
-term_freq <- document_term_frequencies(...)
+
+term_freq <- document_term_frequencies(docs, term = "word")
+    
 
 # Computando as estatísticas da coleção e convertendo em data.frame
 docs_stats <- as.data.frame(document_term_frequencies_statistics(...))
