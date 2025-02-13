@@ -96,24 +96,24 @@ computa_resultados <- function(query, ground_truth, stats, stat_name,
                                top, text) {
   # Criando ranking (função do arquivo base)
   # Dica: você pode acessar a segunda coluna da query a partir de $word ou [["word"]]
-  ranking <- get_ranking_by_stats(...)
+  ranking <- get_ranking_by_stats(stat_name, stats, query$word)
   # Visualizando o ranking (apenas para debuging)
-  # head(ranking, n = 5)
+  head(ranking, n = 5)
   
   # Calculando a precisão
   # Dica: para calcular a precisão, revocação e utilizar a função plot_prec_e_rev,
   # utilize a coluna doc_id do ranking gerado (você pode acessar com $doc_id)
-  p <- ...
+  p <- mapply(precision, 1:top, MoreArgs = list(gtruth = ground_truth, ranking$doc_id))
 
   # Calculando a revocação
-  r <- ...
+  r <- mapply(recall, 1:top, MoreArgs = list(gtruth = ground_truth, ranking$doc_id))
 
   # Imprimindo os valores de precisão e revocação
   cat(paste("Consulta: ", query[1,1], "\nPrecisão: ", p, 
             "\tRevocação: ", r, "\n"))
   
   # Gerando o plot Precisão + Revocação (função do arquivo base)
-  plot_prec_e_rev(...) 
+  plot_prec_e_rev(stats$doc_id, ground_truth, k = top, text = text) 
 }
 
 # Definindo a consulta 1 
@@ -122,8 +122,9 @@ computa_resultados <- function(query, ground_truth, stats, stat_name,
 # o exemplo da linha 52 e 53.
 # Para a variável n_consulta1, você deve informar o número da consulta. Por exemplo,
 # se usar a Query_01 como consulta, n_consulta1 deve receber o valor 1.
-consulta1 <- ...
-n_consulta1 <- ...
+consulta1 <-queries[queries$doc_id == "Query_02",2]
+# tokens_teste <- tokenize_words(consulta1, strip_punct = FALSE, lowercase = FALSE)
+n_consulta1 <- 2
 
 ## Exemplo de uso da função computa_resultados:
 # computa_resultados(consulta1, ground_truths[n_consulta1, ], 
@@ -131,7 +132,7 @@ n_consulta1 <- ...
 #                    top = 15, "titulo")
 
 # Resultados para a consulta 1 e tf_idf
-computa_resultados(...)
+computa_resultados(consulta1, ground_truths[n_consulta1, ],docs_stats,"tf_idf",top = 15,"Q3 - Precisão e Revocação - tf_idf")
 
 # Resultados para a consulta 1 e bm25
 computa_resultados(...)
