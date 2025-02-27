@@ -2,6 +2,11 @@ library(ggplot2)
 library(ggcorrplot)
 library(hrbrthemes)
 library(dplyr)
+library(knitr)
+library(kableExtra)
+library(magrittr)
+library(nortest)
+library(fitdistrplus)
 
 #                                                                                  #
 #                                                                                  #
@@ -35,8 +40,8 @@ cepagri <- read.csv(con, header = FALSE, sep = ";", col.names = names, fill = TR
 head(cepagri)
 
 # SETAR O WORKING DIRECTORY
+wd <- setwd("C:/Users/czset/OneDrive/Documentos/Mineração de Dados Complexos-CarlosSette/INF-612 Análise de dados/trabalhos/trabalho 2")
 setwd("C:/Users/czset/OneDrive/Documentos/Mineração de Dados Complexos-CarlosSette/INF-612 Análise de dados/trabalhos/trabalho 2")
-
 
 
 #                                                                                  #
@@ -85,6 +90,7 @@ cepagri[!is.na(cepagri$sensa) & (cepagri$sensa == 99.9), ]
 
 # Vamos remover o 99.9 e colocar NA no lugar.
 cepagri[!is.na(cepagri$sensa) & (cepagri$sensa == 99.9), 5] <- NA
+# cepagri <- cepagri[cepagri$sensa != 99.9, ]
 summary(cepagri$sensa)
 
 # checando se os dados de temperatura foram duplicados no intervalo de 1 dia
@@ -102,6 +108,7 @@ any(consecutive(cepagri$umid, 144))
 filtro <- consecutive(cepagri$umid,144)
 sum(filtro)
 cepagri <- cepagri[!filtro, ]
+any(consecutive(cepagri$umid, 144)) # Deve ser FALSE
 
 
 # Filtrar datas 
@@ -118,12 +125,18 @@ cepagri <- cepagri[(cepagri$ano >= 2015 & cepagri$ano<2025), ]
 # Verificar o summary de todas as colunas
 summary(cepagri)
 
-# Histograma das variáveis
-hist(cepagri$vento)
-hist(cepagri$temp)
-hist(cepagri$umid)
-hist(cepagri$sensa)
 
+# Histograma das variáveis
+hist(cepagri$vento, main = "Histograma de Vento", xlab = "Vento (km/h)")
+hist(cepagri$temp, main = "Histograma de Temperatura", xlab = "Temperatura (oC)")
+hist(cepagri$umid, main = "Histograma de Umidade", xlab = "Umidade (%)")
+hist(cepagri$sensa, main = "Histograma de Sensação Térmica", xlab = "Sensação térmica (oC)")
+
+# Teste de Anderson-Darling para normalidade dos dados
+ad.test(cepagri$temp)
+ad.test(cepagri$vento)
+ad.test(cepagri$umid)
+ad.test(cepagri$sensa)
 
 # Temperaturas médias e extremos, ano a ano
 dados <- aggregate(temp ~ ano, data = cepagri, summary)
@@ -303,7 +316,7 @@ ggplot(media_temp, aes(x=factor(ano), y=temp_media, group=estacao)) +
   geom_line(aes(color=estacao)) +
   facet_wrap(~estacao, scales="free_x") +
   labs(x="Ano", y="Temperatura Média", title="Temperatura Média Anual por Estação (2015-2024)",
-       color="Estação")
+       color="Estação") + theme_minimal()
 
 # Boxplots de distribuicao de temperatura por estaçao
 ggplot(cepagri, aes(x=factor(ano), y=temp, fill=factor(ano))) +
@@ -321,3 +334,23 @@ ggplot(cepagri, aes(x=factor(mes), y=factor(ano), fill=temp)) +
   labs(x="Mês", y="Ano", title="Heatmap de Temperatura Média Mensal por Estação (2021-2024)",
        fill="Temperatura")
 
+
+
+# 
+# ######################################################################
+# #
+# # Extra
+# #
+# # # Comando para salvar todos os plots gerados e que estão abertos no 
+# # Rstudio no momemto da execução. Esse comando pode ajudar a comparar 
+# # os gráfico lado a lado.
+# # 
+# # Listar o diretório temporário que contém os gráficos gerados pelo RStudio
+# plots.dir.path <- list.files(tempdir(), pattern = "rs-graphics", full.names = TRUE)
+# 
+# # Listar os arquivos PNG no diretório temporário
+# plots.png.paths <- list.files(plots.dir.path, pattern = ".png", full.names = TRUE)
+# 
+# # Copiar os arquivos PNG para o diretório de trabalho
+# file.copy(from = plots.png.paths, to = wd)
+# ######################################################################
