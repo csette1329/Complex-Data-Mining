@@ -89,7 +89,11 @@ cepagri[!is.na(cepagri$sensa) & (cepagri$sensa < 0), ]
 cepagri[!is.na(cepagri$sensa) & (cepagri$sensa == 99.9), ]
 
 # Vamos remover o 99.9 e colocar NA no lugar.
+sum(is.na(cepagri$sensa))
 cepagri[!is.na(cepagri$sensa) & (cepagri$sensa == 99.9), 5] <- NA
+sum(is.na(cepagri$sensa))
+cepagri <- cepagri[!is.na(cepagri$sensa),]
+sum(is.na(cepagri$sensa))
 # cepagri <- cepagri[cepagri$sensa != 99.9, ]
 summary(cepagri$sensa)
 
@@ -103,12 +107,14 @@ sum(filtro)
 cepagri <- cepagri[!filtro, ]
 any(consecutive(cepagri$temp, 144)) # Deve ser FALSE
 
+
 # checando se os dados de umidade foram duplicados no intervalo de 1 dia
 any(consecutive(cepagri$umid, 144))
 filtro <- consecutive(cepagri$umid,144)
 sum(filtro)
 cepagri <- cepagri[!filtro, ]
 any(consecutive(cepagri$umid, 144)) # Deve ser FALSE
+filtro <- consecutive(cepagri$umid,144)
 
 
 # Filtrar datas 
