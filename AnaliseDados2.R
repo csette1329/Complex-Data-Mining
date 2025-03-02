@@ -7,6 +7,8 @@ library(kableExtra)
 library(magrittr)
 library(nortest)
 library(fitdistrplus)
+library(gt)
+library(lubridate)
 
 #                                                                                  #
 #                                                                                  #
@@ -340,7 +342,128 @@ ggplot(cepagri, aes(x=factor(mes), y=factor(ano), fill=temp)) +
   labs(x="Mês", y="Ano", title="Heatmap de Temperatura Média Mensal por Estação (2021-2024)",
        fill="Temperatura")
 
+# Geração das tabelas de médias mensais e anuais
+# para os anos de 2015, 2016, 2019 e 2022.
 
+# Filtra os dados considerando os anos em questão.
+cepagri_filtered <- cepagri %>%
+  filter(year(horario) %in% c(2015, 2016, 2019, 2022))
+
+# Converte os meses para o formato de texto.
+cepagri_filtered <- cepagri_filtered %>%
+  mutate(month = format(horario, "%B"))
+
+# Ordena os meses.
+cepagri_filtered$month <- factor(cepagri_filtered$month, levels = c("janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"))
+
+# Calcula os valores médios mensais de cada parâmetro.
+monthly_averages <- cepagri_filtered %>%
+  group_by(month) %>%
+  summarise(
+    avg_temp = round(mean(temp, na.rm = TRUE), 1),
+    avg_vento = round(mean(vento, na.rm = TRUE), 1),
+    avg_umid = round(mean(umid, na.rm = TRUE), 1),
+    avg_sensa = round(mean(sensa, na.rm = TRUE), 1)
+  )
+
+# Calcula os valores médios anuais de cada parâmetro.
+yearly_averages <- cepagri_filtered %>%
+  mutate(year = format(horario, "%Y")) %>%
+  group_by(year) %>%
+  summarise(
+    avg_temp = round(mean(temp, na.rm = TRUE), 1),
+    avg_vento = round(mean(vento, na.rm = TRUE), 1),
+    avg_umid = round(mean(umid, na.rm = TRUE), 1),
+    avg_sensa = round(mean(sensa, na.rm = TRUE), 1)
+  )
+
+# Cria e estiliza a tabela de médias mensais.
+monthly_averages_table <- monthly_averages %>%
+  gt() %>%
+  tab_header(
+    title = "Médias Mensais para Temperatura, Velocidade dos Ventos, Umidade e Sensações Térmicas"
+  ) %>%
+  cols_label(
+    month = "Mês",
+    avg_temp = "Temperatura Média (ºC)",
+    avg_vento = "Velocidade Média dos Ventos (km/h)",
+    avg_umid = "Umidade Média (%)",
+    avg_sensa = "Sensação Térmica Média (ºC)"
+  ) %>%
+  tab_style(
+    style = list(
+      cell_text(weight = "bold"),
+      cell_borders(sides = "all", color = "black", weight = px(1))
+    ),
+    locations = cells_column_labels(everything())
+  ) %>%
+  tab_style(
+    style = cell_borders(sides = "all", color = "black", weight = px(1)),
+    locations = cells_body()
+  ) %>%
+  tab_style(
+    style = cell_fill(color = "lightblue"),
+    locations = cells_body(columns = vars(avg_temp))
+  ) %>%
+  tab_style(
+    style = cell_fill(color = "lightgreen"),
+    locations = cells_body(columns = vars(avg_vento))
+  ) %>%
+  tab_style(
+    style = cell_fill(color = "lightyellow"),
+    locations = cells_body(columns = vars(avg_umid))
+  ) %>%
+  tab_style(
+    style = cell_fill(color = "lightcoral"),
+    locations = cells_body(columns = vars(avg_sensa))
+  )
+
+# Exibe a tabela de médias mensais.
+monthly_averages_table
+
+# Cria e estiliza a tabela de médias anuais.
+yearly_averages_table <- yearly_averages %>%
+  gt() %>%
+  tab_header(
+    title = "Médias Anuais para Temperatura, Velocidade dos Ventos, Umidade e Sensações Térmicas"
+  ) %>%
+  cols_label(
+    year = "Ano",
+    avg_temp = "Temperatura Média (ºC)",
+    avg_vento = "Velocidade Média dos Ventos (km/h)",
+    avg_umid = "Umidade Média (%)",
+    avg_sensa = "Sensação Térmica Média (ºC)"
+  ) %>%
+  tab_style(
+    style = list(
+      cell_text(weight = "bold"),
+      cell_borders(sides = "all", color = "black", weight = px(1))
+    ),
+    locations = cells_column_labels(everything())
+  ) %>%
+  tab_style(
+    style = cell_borders(sides = "all", color = "black", weight = px(1)),
+    locations = cells_body()
+  ) %>%
+  tab_style(
+    style = cell_fill(color = "lightblue"),
+    locations = cells_body(columns = vars(avg_temp))
+  ) %>%
+  tab_style(
+    style = cell_fill(color = "lightgreen"),
+    locations = cells_body(columns = vars(avg_vento))
+  ) %>%
+  tab_style(
+    style = cell_fill(color = "lightyellow"),
+    locations = cells_body(columns = vars(avg_umid))
+  ) %>%
+  tab_style(
+    style = cell_fill(color = "lightcoral"),
+    locations = cells_body(columns = vars(avg_sensa))
+  )
+
+# Exibe a tabela.
+yearly_averages_table
 
 # 
 # ######################################################################
