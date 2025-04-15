@@ -7,12 +7,13 @@ Welcome to my personal Data Mining! Here you will find a collection of projects 
 
 
 
-### Preview
+#### Preview
 
 
 ## [Project 2] Data Recovery
 
 
+#### Preview
 
 
 
