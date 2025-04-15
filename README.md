@@ -10,12 +10,16 @@ Welcome to my personal Data Mining! Here you will find a collection of projects 
 #### Preview
 
 
-## [Project 2] Data Recovery
+## [Project 2] Data Recovery in TIME magazine articles
 
 
 #### Preview
 
 
+## [Project 3] Data Visualization of movies dataset (MovieLens)
+
+
+#### Preview
 
 ## Author
 - <b>Carlos Sette</b>
